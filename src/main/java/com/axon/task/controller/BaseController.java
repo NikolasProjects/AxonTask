@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -35,23 +36,10 @@ public class BaseController {
     @RequestMapping("/ordersList")
     public String orders(Model model) {
         List<Order> orders = ParsFixLog.fixOrders(pathFile);
-        List<Order> ordersBID = new ArrayList<>();
-        List<Order> ordersASK = new ArrayList<>();
-        for (Order type : orders
-                ) {
-            if (type.getType().equals(OrderType.ASK)) {
-                ordersASK.add(type);
-            }else ordersBID.add(type);
-        }
-
-        orderRepository.saveAll(ordersASK);
-        orderRepository.saveAll(ordersBID);
-        model.addAttribute("ordersBID", ordersBID);
-        model.addAttribute("ordersASK", ordersASK);
+        orderRepository.saveAll(orders);
         model.addAttribute("orders", orders);
         return "orders";
     }
-
 
 
 }
