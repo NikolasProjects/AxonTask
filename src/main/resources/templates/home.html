@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<!--<p th:text="'Orders: ' + ${orders} + '!'" />-->
+<div class="container">
+    <div class="starter-template">
+        <h1>Book:</h1>
+        <table border="1">
+            <tr>
+                <th colspan="2">BID</th>
+                <th colspan="2">ASK</th>
+            </tr>
+            <tr>
+                <th>Price</th>
+                <th>Size</th>
+                <th>Bay</th>
+            </tr>
+            <!-- $scope.employees -->
+            <tr th:each="order : ${orders}">
+                <td th:utext=${orders.price}></td>
+                <td th:utext=${orders.size}></td>
+                <td></td>
+                <td>
+                    <a ng-click="editEmployee(employee)" class="edit-button">Edit</a>
+                </td>
+                <td>
+                    <a ng-click="deleteEmployee(employee)" class="delete-button">Delete</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
