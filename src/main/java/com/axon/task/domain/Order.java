@@ -1,9 +1,5 @@
 package com.axon.task.domain;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,6 +18,8 @@ public class Order {
     private Long orderId;
     private BigDecimal price;
     private Long size;
+    private Long orderAction;
+    private int msgId;
 
     public Long getId() {
         return id;
@@ -71,29 +69,20 @@ public class Order {
         this.size = size;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Order order = (Order) o;
-
-        if (date != null ? !date.equals(order.date) : order.date != null) return false;
-        if (type != order.type) return false;
-        if (orderId != null ? !orderId.equals(order.orderId) : order.orderId != null) return false;
-        if (price != null ? !price.equals(order.price) : order.price != null) return false;
-        return size != null ? size.equals(order.size) : order.size == null;
-
+    public Long getOrderAction() {
+        return orderAction;
     }
 
-    @Override
-    public int hashCode() {
-        int result = date != null ? date.hashCode() : 0;
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (orderId != null ? orderId.hashCode() : 0);
-        result = 31 * result + (price != null ? price.hashCode() : 0);
-        result = 31 * result + (size != null ? size.hashCode() : 0);
-        return result;
+    public void setOrderAction(Long orderAction) {
+        this.orderAction = orderAction;
+    }
+
+    public int getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(int msgId) {
+        this.msgId = msgId;
     }
 
     @Override
@@ -105,6 +94,39 @@ public class Order {
                 ", orderId=" + orderId +
                 ", price=" + price +
                 ", size=" + size +
+                ", orderAction=" + orderAction +
+                ", msgId=" + msgId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Order order = (Order) o;
+
+        if (msgId != order.msgId) return false;
+        if (id != null ? !id.equals(order.id) : order.id != null) return false;
+        if (date != null ? !date.equals(order.date) : order.date != null) return false;
+        if (type != order.type) return false;
+        if (orderId != null ? !orderId.equals(order.orderId) : order.orderId != null) return false;
+        if (price != null ? !price.equals(order.price) : order.price != null) return false;
+        if (size != null ? !size.equals(order.size) : order.size != null) return false;
+        return orderAction != null ? orderAction.equals(order.orderAction) : order.orderAction == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (date != null ? date.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (orderId != null ? orderId.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (size != null ? size.hashCode() : 0);
+        result = 31 * result + (orderAction != null ? orderAction.hashCode() : 0);
+        result = 31 * result + msgId;
+        return result;
     }
 }

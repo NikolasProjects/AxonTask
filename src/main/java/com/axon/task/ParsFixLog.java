@@ -2,12 +2,10 @@ package com.axon.task;
 
 import com.axon.task.domain.Order;
 import com.axon.task.domain.OrderType;
-import lombok.extern.slf4j.Slf4j;
 import quickfix.*;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -28,7 +26,7 @@ public class ParsFixLog {
         List<String> lines = null;
         try {
             lines = Files.readAllLines(file);
-            List<Order> orders = new ArrayList<>();
+            List<Order> ordersASK = new ArrayList<>();
             for (String line : lines) {
                 int indexOfStartMessage = line.indexOf("8=FIX");
                 String messageWithoutLogPrefix = line.substring(indexOfStartMessage);
@@ -40,29 +38,32 @@ public class ParsFixLog {
                 quickfix.fix44.Message message = (quickfix.fix44.Message) MessageUtils.parse(new DefaultMessageFactory(), new DataDictionary(targetStream), fixMessage);
 
                 LocalDateTime date = message.getHeader().getUtcTimeStamp(52);
+                int idMsg = message.getHeader().getInt(34);
                 List<Group> groups = message.getGroups(268);
                 for (Group group : groups) {
-                    Order order = mapOrder(group, date);
+                    Order order = mapOrder(group, date, idMsg);
                     if (order != null) {
-                        orders.add(order);
+                        ordersASK.add(order);
                     }
                 }
             }
-            return orders;
+            return ordersASK;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    private static Order mapOrder(Group group, LocalDateTime date) {
+    private static Order mapOrder(Group group, LocalDateTime date, int idMsg) {
         Order order = new Order();
         try {
             order.setDate(date);
+            order.setMsgId(idMsg);
             order.setType(OrderType.getTypeById(Integer.valueOf(group.getString(269))));
             order.setOrderId(Long.valueOf(group.getString(278)));
             order.setPrice(new BigDecimal(group.getString(270)));
             order.setSize(Long.valueOf(group.getString(271)));
+            order.setOrderAction(Long.valueOf(group.getString(279)));
         } catch (FieldNotFound fieldNotFound) {
             return null;
         }
