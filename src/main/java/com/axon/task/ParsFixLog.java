@@ -1,5 +1,7 @@
 package com.axon.task;
 
+import com.axon.task.domain.BodyFixMessage;
+import com.axon.task.domain.HeadFixMessage;
 import com.axon.task.domain.Order;
 import com.axon.task.domain.OrderType;
 import quickfix.*;
@@ -15,19 +17,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Nikolay on 20.09.2018.
  */
 public class ParsFixLog {
 
-    public static List<Order> fixOrders(String pathFile) {
+    public static /*List<Order> fixOrders*/ Map<Integer, List<Order>> mapMsg(String pathFile) {
 
         Path file = Paths.get(pathFile);
         List<String> lines = null;
         try {
             lines = Files.readAllLines(file);
-            List<Order> ordersASK = new ArrayList<>();
+            List<Order> orders = new ArrayList<>();
+            Map<Integer, List<Order>> ordersMap = new HashMap<>();
             for (String line : lines) {
                 int indexOfStartMessage = line.indexOf("8=FIX");
                 String messageWithoutLogPrefix = line.substring(indexOfStartMessage);
@@ -40,15 +44,18 @@ public class ParsFixLog {
 
                 LocalDateTime date = message.getHeader().getUtcTimeStamp(52);
                 int idMsg = message.getHeader().getInt(34);
+                Integer idKey = new Integer(idMsg);
                 List<Group> groups = message.getGroups(268);
                 for (Group group : groups) {
                     Order order = mapOrder(group, date, idMsg);
                     if (order != null) {
-                        ordersASK.add(order);
+                        orders.add(order);
                     }
                 }
+                ordersMap.put(idKey, orders);
             }
-            return ordersASK;
+            return ordersMap;
+//            return orders;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -69,5 +76,15 @@ public class ParsFixLog {
             return null;
         }
         return order;
+    }
+
+    private static HeadFixMessage mapHeadFixMessage() {
+        HeadFixMessage headFixMessage = new HeadFixMessage();
+        return headFixMessage;
+    }
+
+    private static BodyFixMessage mapBodyFixMessage() {
+        BodyFixMessage bodyFixMessage = new BodyFixMessage();
+        return bodyFixMessage;
     }
 }

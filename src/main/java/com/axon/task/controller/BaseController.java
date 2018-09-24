@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Nikolay on 20.09.2018.
@@ -35,9 +36,9 @@ public class BaseController {
 
     @RequestMapping("/ordersList")
     public String orders(Model model) {
-        List<Order> orders = ParsFixLog.fixOrders(pathFile);
-        orderRepository.saveAll(orders);
-        model.addAttribute("orders", orders);
+        Map<Integer, List<Order>> ordersMap = ParsFixLog.mapMsg(pathFile);
+//        orderRepository.saveAll(ordersMap);
+        model.addAttribute("ordersMap", ordersMap);
         return "orders";
     }
 

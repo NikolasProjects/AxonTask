@@ -8,21 +8,18 @@
 <h1>Orders</h1>
 <br/><br/>
 <div>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Number</th>
-            <th>Type</th>
-            <th>Price</th>
-            <th>Size</th>
-        </tr>
-        <tr th:each="order : ${orders}">
-            <td th:utext="${order.orderId}"></td>
-            <td th:utext="${order.msgId}"></td>
-            <td th:utext="${order.type}"></td>
-            <td th:utext="${order.price}"></td>
-            <td th:utext="${order.size}">...</td>
-
+    <table>
+        <tr th:each="element : ${ordersMap}">
+            <td th:text="${element.key}">keyvalue</td>
+            <table>
+                <tr th:each="order : ${element.value}">
+                    <td th:utext="${order.orderId}"></td>
+                    <td th:utext="${order.msgId}"></td>
+                    <td th:utext="${order.type}"></td>
+                    <td th:utext="${order.price}"></td>
+                    <td th:utext="${order.size}">...</td>
+                </tr>
+            </table>
         </tr>
     </table>
 </div>
