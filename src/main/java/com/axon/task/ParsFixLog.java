@@ -1,9 +1,9 @@
 package com.axon.task;
 
-import com.axon.task.domain.BodyFixMessage;
-import com.axon.task.domain.HeadFixMessage;
-import com.axon.task.domain.Order;
-import com.axon.task.domain.OrderType;
+import com.axon.task.domain.*;
+import com.axon.task.domain.Message;
+import com.axon.task.repository.MessageRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import quickfix.*;
 
 import java.io.File;
@@ -15,91 +15,75 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Nikolay on 20.09.2018.
  */
 public class ParsFixLog {
 
-    public static /*List<Order> fixOrders*/ Map<Integer, List<Order>> mapMsg(String pathFile) {
+    @Autowired
+    MessageRepository messageRepository;
+
+    public static void parsAndAddToDB(String pathFile) {
 
         Path file = Paths.get(pathFile);
         List<String> lines = null;
         try {
             lines = Files.readAllLines(file);
-            List<Order> orders = new ArrayList<>();
-
-            List<HeadFixMessage> headFixMessages = new ArrayList<>();
-            List<BodyFixMessage> bodyFixMessages = new ArrayList<>();
-
-            Map<Integer, List<Order>> ordersMap = new HashMap<>();
             for (String line : lines) {
+                int indexOfStartSendMsg = line.indexOf("N ");
+                String sendMsgWithoutPrefix = line.substring(indexOfStartSendMsg);
+                int indexOfEndSendMsg = sendMsgWithoutPrefix.indexOf(" :");
+                String sendingTimeMsg = sendMsgWithoutPrefix.substring(0, indexOfEndSendMsg);
+                LocalDateTime sendingTime = LocalDateTime.parse(sendingTimeMsg);
+
                 int indexOfStartMessage = line.indexOf("8=FIX");
                 String messageWithoutLogPrefix = line.substring(indexOfStartMessage);
                 int indexOfEndMessage = messageWithoutLogPrefix.indexOf(" ");
-                String fixMessage = messageWithoutLogPrefix.substring(0, indexOfEndMessage);
+                String cleanMessage = messageWithoutLogPrefix.substring(0, indexOfEndMessage);
 
                 File initialFile = new File("C:/Users/Nikolay/Desktop/quickfixj-master/FIX44.modified.xml");
                 InputStream targetStream = new FileInputStream(initialFile);
-                quickfix.fix44.Message message = (quickfix.fix44.Message) MessageUtils.parse(new DefaultMessageFactory(), new DataDictionary(targetStream), fixMessage);
+                quickfix.fix44.Message parsFixMessage = (quickfix.fix44.Message) MessageUtils.parse(new DefaultMessageFactory(), new DataDictionary(targetStream), cleanMessage);
 
-                LocalDateTime date = message.getHeader().getUtcTimeStamp(52);
-                int idMsg = message.getHeader().getInt(34);
-                Integer idKey = new Integer(idMsg);
-                //List<Haeder> haeders = message.getHeader();
-                List<Group> groups = message.getGroups(268);
+                Message message = new Message();
+                message.setMessageId(Long.valueOf(parsFixMessage.getHeader().getString(34)));
+                message.setReceiveTime(parsFixMessage.getHeader().getUtcTimeStamp(52));
+                message.setSendTime(sendingTime);
+
+                List<Operation> operations = new ArrayList<>();
+
+                List<Group> groups = parsFixMessage.getGroups(268);
                 for (Group group : groups) {
-                    Order order = mapOrder(group, date, idMsg);
-
-                    if (order != null) {
-                        orders.add(order);
-                    }
+                    Operation operation = mapOperation(group);
+                    operations.add(operation);
                 }
-                ordersMap.put(idKey, orders);
+                message.setOperations(operations);
+              //  messageRepository.save(message);
             }
-            return ordersMap;
-//            return orders;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
         }
     }
 
-    private static Order mapOrder(Group group, LocalDateTime date, int idMsg) {
-        Order order = new Order();
+
+    private static Operation mapOperation(Group group) {
+        Operation operation = new Operation();
         try {
-            order.setDate(date);
-            order.setMsgId(idMsg);
-            order.setType(OrderType.getTypeById(Integer.valueOf(group.getString(269))));
-            order.setOrderId(Long.valueOf(group.getString(278)));
-            order.setPrice(new BigDecimal(group.getString(270)));
-            order.setSize(Long.valueOf(group.getString(271)));
-            order.setOrderAction(Long.valueOf(group.getString(279)));
+            operation.setOperationType279(OperationType.getTypeById(Integer.valueOf(group.getString(279))));
+            if (operation.getOperationType279() == OperationType.ADD) {
+                operation.setOperationId278(Long.valueOf(group.getString(278)));
+                operation.setOrderType269(OrderType.getTypeById(Integer.valueOf(group.getString(269))));
+                operation.setPrice270(new BigDecimal(group.getString(270)));
+                operation.setPriceSize271(Long.valueOf(group.getString(271)));
+            } else {
+                operation.setOperationId278(Long.valueOf(group.getString(278)));
+            }
+
         } catch (FieldNotFound fieldNotFound) {
             return null;
         }
-        return order;
-    }
-
-    private static HeadFixMessage mapHeadFixMessage() {
-        HeadFixMessage headFixMessage = new HeadFixMessage();
-        return headFixMessage;
-    }
-
-    private static BodyFixMessage mapBodyFixMessage(Group group) {
-        BodyFixMessage bodyFixMessage = new BodyFixMessage();
-        try {
-            bodyFixMessage.setIdOperation278(Long.valueOf(group.getString(278)));
-            bodyFixMessage.setTypeOrder269(Integer.valueOf(group.getString(269)));
-            bodyFixMessage.setTypeOperation279(Integer.valueOf(group.getString(279)));
-            bodyFixMessage.setPrice270(new BigDecimal(group.getString(270)));
-            bodyFixMessage.setSizePrice271(Long.valueOf(group.getString(271)));
-        }catch (FieldNotFound fieldNotFound){
-            return null;
-        }
-        return bodyFixMessage;
+        return operation;
     }
 }

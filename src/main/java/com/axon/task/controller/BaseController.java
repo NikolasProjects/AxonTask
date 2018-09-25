@@ -1,18 +1,10 @@
 package com.axon.task.controller;
 
 import com.axon.task.ParsFixLog;
-import com.axon.task.domain.Order;
-import com.axon.task.domain.OrderType;
-import com.axon.task.repository.OrderRepository;
-import lombok.Getter;
+import com.axon.task.repository.MessageRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Nikolay on 20.09.2018.
@@ -22,10 +14,10 @@ public class BaseController {
 
     public static String pathFile = "C:/Users/Nikolay/Desktop/Тестовое задание axonsoftware.biz/market_data/1001083-77MARKETS-PRICE_03032210025631.R0.summary";
 
-    private final OrderRepository orderRepository;
+    private final MessageRepository messageRepository;
 
-    public BaseController(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    public BaseController(MessageRepository messageRepository) {
+        this.messageRepository = messageRepository;
     }
 
 
@@ -36,9 +28,9 @@ public class BaseController {
 
     @RequestMapping("/ordersList")
     public String orders(Model model) {
-        Map<Integer, List<Order>> ordersMap = ParsFixLog.mapMsg(pathFile);
-//        orderRepository.saveAll(ordersMap);
-        model.addAttribute("ordersMap", ordersMap);
+        ParsFixLog.parsAndAddToDB(pathFile);
+        /*orderRepository.saveAll(orders);
+        model.addAttribute("orders", orders);*/
         return "orders";
     }
 
