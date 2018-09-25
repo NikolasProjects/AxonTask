@@ -31,6 +31,10 @@ public class ParsFixLog {
         try {
             lines = Files.readAllLines(file);
             List<Order> orders = new ArrayList<>();
+
+            List<HeadFixMessage> headFixMessages = new ArrayList<>();
+            List<BodyFixMessage> bodyFixMessages = new ArrayList<>();
+
             Map<Integer, List<Order>> ordersMap = new HashMap<>();
             for (String line : lines) {
                 int indexOfStartMessage = line.indexOf("8=FIX");
@@ -45,9 +49,11 @@ public class ParsFixLog {
                 LocalDateTime date = message.getHeader().getUtcTimeStamp(52);
                 int idMsg = message.getHeader().getInt(34);
                 Integer idKey = new Integer(idMsg);
+                //List<Haeder> haeders = message.getHeader();
                 List<Group> groups = message.getGroups(268);
                 for (Group group : groups) {
                     Order order = mapOrder(group, date, idMsg);
+
                     if (order != null) {
                         orders.add(order);
                     }
@@ -83,8 +89,17 @@ public class ParsFixLog {
         return headFixMessage;
     }
 
-    private static BodyFixMessage mapBodyFixMessage() {
+    private static BodyFixMessage mapBodyFixMessage(Group group) {
         BodyFixMessage bodyFixMessage = new BodyFixMessage();
+        try {
+            bodyFixMessage.setIdOperation278(Long.valueOf(group.getString(278)));
+            bodyFixMessage.setTypeOrder269(Integer.valueOf(group.getString(269)));
+            bodyFixMessage.setTypeOperation279(Integer.valueOf(group.getString(279)));
+            bodyFixMessage.setPrice270(new BigDecimal(group.getString(270)));
+            bodyFixMessage.setSizePrice271(Long.valueOf(group.getString(271)));
+        }catch (FieldNotFound fieldNotFound){
+            return null;
+        }
         return bodyFixMessage;
     }
 }
