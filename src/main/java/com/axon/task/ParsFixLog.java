@@ -23,7 +23,7 @@ import java.util.List;
 public class ParsFixLog {
 
     @Autowired
-    MessageRepository messageRepository;
+    private static MessageRepository messageRepository;
 
     public static void parsAndAddToDB(String pathFile) {
 
@@ -60,7 +60,7 @@ public class ParsFixLog {
                     operations.add(operation);
                 }
                 message.setOperations(operations);
-              //  messageRepository.save(message);
+                messageRepository.save(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
