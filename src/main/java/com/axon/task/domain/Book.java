@@ -17,42 +17,6 @@ public class Book {
     private OrderType type;
     private Long operationId;
 
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", size=" + size +
-                ", price=" + price +
-                ", type=" + type +
-                ", operationId=" + operationId +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Book book = (Book) o;
-
-        if (id != null ? !id.equals(book.id) : book.id != null) return false;
-        if (size != null ? !size.equals(book.size) : book.size != null) return false;
-        if (price != null ? !price.equals(book.price) : book.price != null) return false;
-        if (type != book.type) return false;
-        return operationId != null ? operationId.equals(book.operationId) : book.operationId == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (size != null ? size.hashCode() : 0);
-        result = 31 * result + (price != null ? price.hashCode() : 0);
-        result = 31 * result + (type != null ? type.hashCode() : 0);
-        result = 31 * result + (operationId != null ? operationId.hashCode() : 0);
-        return result;
-    }
-
     public Long getOperationId() {
 
         return operationId;
@@ -92,6 +56,42 @@ public class Book {
 
     public void setType(OrderType type) {
         this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", size=" + size +
+                ", price=" + price +
+                ", type=" + type +
+                ", operationId=" + operationId +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Book book = (Book) o;
+
+        if (id != null ? !id.equals(book.id) : book.id != null) return false;
+        if (size != null ? !size.equals(book.size) : book.size != null) return false;
+        if (price != null ? !price.equals(book.price) : book.price != null) return false;
+        if (type != book.type) return false;
+        return operationId != null ? operationId.equals(book.operationId) : book.operationId == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (size != null ? size.hashCode() : 0);
+        result = 31 * result + (price != null ? price.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (operationId != null ? operationId.hashCode() : 0);
+        return result;
     }
 
 }
