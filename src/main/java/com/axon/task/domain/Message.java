@@ -14,9 +14,8 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long messageId;
-    private LocalDateTime sendTime;
     private LocalDateTime receiveTime;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "operation")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "message")
     private List<Operation> operations;
 
     public Long getId() {
@@ -33,14 +32,6 @@ public class Message {
 
     public void setMessageId(Long messageId) {
         this.messageId = messageId;
-    }
-
-    public LocalDateTime getSendTime() {
-        return sendTime;
-    }
-
-    public void setSendTime(LocalDateTime sendTime) {
-        this.sendTime = sendTime;
     }
 
     public LocalDateTime getReceiveTime() {
@@ -68,7 +59,6 @@ public class Message {
 
         if (id != null ? !id.equals(message.id) : message.id != null) return false;
         if (messageId != null ? !messageId.equals(message.messageId) : message.messageId != null) return false;
-        if (sendTime != null ? !sendTime.equals(message.sendTime) : message.sendTime != null) return false;
         if (receiveTime != null ? !receiveTime.equals(message.receiveTime) : message.receiveTime != null) return false;
         return operations != null ? operations.equals(message.operations) : message.operations == null;
 
@@ -78,7 +68,6 @@ public class Message {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (messageId != null ? messageId.hashCode() : 0);
-        result = 31 * result + (sendTime != null ? sendTime.hashCode() : 0);
         result = 31 * result + (receiveTime != null ? receiveTime.hashCode() : 0);
         result = 31 * result + (operations != null ? operations.hashCode() : 0);
         return result;
@@ -89,7 +78,6 @@ public class Message {
         return "Message{" +
                 "id=" + id +
                 ", messageId=" + messageId +
-                ", sendTime=" + sendTime +
                 ", receiveTime=" + receiveTime +
                 ", operations=" + operations +
                 '}';

@@ -1,7 +1,7 @@
 package com.axon.task.controller;
 
+import com.axon.task.OperationExecution;
 import com.axon.task.ParsFixLog;
-import com.axon.task.repository.MessageRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class BaseController {
 
-    public static String pathFile = "C:/Users/Nikolay/Desktop/Тестовое задание axonsoftware.biz/market_data/1001083-77MARKETS-PRICE_03032210025631.R0.summary";
+    private final ParsFixLog parsFixLog;
+    private final OperationExecution operationExecution;
 
-    private final MessageRepository messageRepository;
-
-    public BaseController(MessageRepository messageRepository) {
-        this.messageRepository = messageRepository;
+    public BaseController(ParsFixLog parsFixLog, OperationExecution operationExecution) {
+        this.parsFixLog = parsFixLog;
+        this.operationExecution = operationExecution;
     }
 
 
@@ -28,8 +28,9 @@ public class BaseController {
 
     @RequestMapping("/ordersList")
     public String orders(Model model) {
-        ParsFixLog.parsAndAddToDB(pathFile);
-        /*orderRepository.saveAll(orders);
+        parsFixLog.parsAndAddToDB();
+//        operationExecution.executionOperation();
+     /*   orderRepository.saveAll(orders);
         model.addAttribute("orders", orders);*/
         return "orders";
     }

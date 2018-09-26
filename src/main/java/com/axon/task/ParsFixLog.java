@@ -3,7 +3,9 @@ package com.axon.task;
 import com.axon.task.domain.*;
 import com.axon.task.domain.Message;
 import com.axon.task.repository.MessageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import quickfix.*;
 
 import java.io.File;
@@ -20,23 +22,26 @@ import java.util.List;
 /**
  * Created by Nikolay on 20.09.2018.
  */
+
+@Service
 public class ParsFixLog {
 
-    @Autowired
-    private static MessageRepository messageRepository;
+    @Value("${system.file-path}")
+    private String filePath;
 
-    public static void parsAndAddToDB(String pathFile) {
+    private final MessageRepository messageRepository;
 
-        Path file = Paths.get(pathFile);
+    public ParsFixLog(MessageRepository messageRepository) {
+        this.messageRepository = messageRepository;
+    }
+
+    public void parsAndAddToDB() {
+
+        Path file = Paths.get(filePath);
         List<String> lines = null;
         try {
             lines = Files.readAllLines(file);
             for (String line : lines) {
-                int indexOfStartSendMsg = line.indexOf("N ");
-                String sendMsgWithoutPrefix = line.substring(indexOfStartSendMsg);
-                int indexOfEndSendMsg = sendMsgWithoutPrefix.indexOf(" :");
-                String sendingTimeMsg = sendMsgWithoutPrefix.substring(0, indexOfEndSendMsg);
-                LocalDateTime sendingTime = LocalDateTime.parse(sendingTimeMsg);
 
                 int indexOfStartMessage = line.indexOf("8=FIX");
                 String messageWithoutLogPrefix = line.substring(indexOfStartMessage);
@@ -50,10 +55,8 @@ public class ParsFixLog {
                 Message message = new Message();
                 message.setMessageId(Long.valueOf(parsFixMessage.getHeader().getString(34)));
                 message.setReceiveTime(parsFixMessage.getHeader().getUtcTimeStamp(52));
-                message.setSendTime(sendingTime);
 
                 List<Operation> operations = new ArrayList<>();
-
                 List<Group> groups = parsFixMessage.getGroups(268);
                 for (Group group : groups) {
                     Operation operation = mapOperation(group);
