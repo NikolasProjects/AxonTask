@@ -11,5 +11,4 @@ import java.util.Map;
  * Created by Nikolay on 26.09.2018.
  */
 public interface MessageRepository extends JpaRepository<Message, Long> {
-
 }

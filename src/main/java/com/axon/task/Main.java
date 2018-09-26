@@ -1,13 +1,15 @@
 package com.axon.task;
 
-import com.axon.task.domain.Book;
-import com.axon.task.domain.Message;
-import com.axon.task.domain.Operation;
+import com.axon.task.domain.*;
 import com.axon.task.repository.BookRepository;
 import com.axon.task.repository.MessageRepository;
 import com.axon.task.repository.OperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import quickfix.FieldNotFound;
+import quickfix.Group;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +19,32 @@ import java.util.Map;
  */
 public class Main {
     @Autowired
-    private MessageRepository messageRepository;
+    private static MessageRepository messageRepository;
 
     @Autowired
-    private OperationRepository operationRepository;
+    private static OperationRepository operationRepository;
 
     @Autowired
-    private BookRepository bookRepository;
+    private static BookRepository bookRepository;
 
-    public static void executionOperation(){
+    public static void executionOperation() {
 
-        Map<Message,List<Operation>> messageMap = new HashMap<>();
+        List<Message> messages = new ArrayList<>();
+        messageRepository.saveAll(messages);
+        for (Message message : messages) {
+            List<Operation> operations = operationRepository.findAllByMsgId(message.getMessageId());
+
+
+            for (Operation operation : operations) {
+                //пройтись по всему списку
+                if (operation.getOperationType279().equals(OperationType.DELETE)) {
+                    bookRepository.deleteProductById(operation.getOperationId278());
+                } else {
+                    bookRepository.addProduct(operation);
+                }
+            }
+        }
 
     }
+
 }
