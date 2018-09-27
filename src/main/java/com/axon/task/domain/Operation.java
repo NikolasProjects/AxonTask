@@ -21,6 +21,14 @@ public class Operation {
     @JoinColumn(name = "message_id", nullable = false)
     private Message message;
 
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
+    }
+
     public Long getId() {
         return id;
     }
@@ -69,13 +77,6 @@ public class Operation {
         this.priceSize271 = priceSize271;
     }
 
-    public Message getMessage() {
-        return message;
-    }
-
-    public void setMessage(Message message) {
-        this.message = message;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -51,8 +51,8 @@ public class Message {
     }
 
     public void addOperation(Operation operation) {
-        operations.add(operation);
         operation.setMessage(this);
+        operations.add(operation);
     }
 
     @Override

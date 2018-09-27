@@ -59,18 +59,18 @@ public class ParsFixLog {
                 Message message = new Message();
                 message.setMessageId(Long.valueOf(parsFixMessage.getHeader().getString(34)));
                 message.setReceiveTime(parsFixMessage.getHeader().getUtcTimeStamp(52));
-
+                List<Operation> operations = new ArrayList<>();
                 List<Group> groups = parsFixMessage.getGroups(268);
                 for (Group group : groups) {
                     Operation operation = mapOperation(group);
+                    operations.add(operation);
                     System.out.println(operation);
                     message.addOperation(operation);
-                    System.out.println(message);
+                   // System.out.println(message);
                 }
                 messageRepository.save(message);
             }
         } catch (Exception e) {
-            //logger.error("Error in ParsFixLog");
             e.printStackTrace();
         }
     }
