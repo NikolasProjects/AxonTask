@@ -60,20 +60,19 @@ public class ParsFixLog {
                 message.setMessageId(Long.valueOf(parsFixMessage.getHeader().getString(34)));
                 message.setReceiveTime(parsFixMessage.getHeader().getUtcTimeStamp(52));
 
-                List<Operation> operations = new ArrayList<>();
                 List<Group> groups = parsFixMessage.getGroups(268);
                 for (Group group : groups) {
                     Operation operation = mapOperation(group);
-                    operations.add(operation);
+                    System.out.println(operation);
+                    message.addOperation(operation);
+                    System.out.println(message);
                 }
-                message.setOperations(operations);
                 messageRepository.save(message);
-                System.out.println(message);
             }
         } catch (Exception e) {
-            logger.error("Error riding file");
+            //logger.error("Error in ParsFixLog");
+            e.printStackTrace();
         }
-        System.out.println("Message add to DB");
     }
 
 

@@ -50,6 +50,11 @@ public class Message {
         this.operations = operations;
     }
 
+    public void addOperation(Operation operation) {
+        operations.add(operation);
+        operation.setMessage(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
