@@ -64,10 +64,12 @@ public class ParsFixLog {
                 }
                 message.setOperations(operations);
                 messageRepository.save(message);
+                System.out.println(message);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("Message add to DB");
     }
 
 
@@ -85,7 +87,7 @@ public class ParsFixLog {
             }
 
         } catch (FieldNotFound fieldNotFound) {
-            return null;
+            //return null;
         }
         return operation;
     }
