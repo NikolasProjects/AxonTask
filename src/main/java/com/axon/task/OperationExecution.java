@@ -39,7 +39,6 @@ public class OperationExecution {
                 } else {
                     addOps.add(operation);
                 }
-
                 bookRepository.deleteAllByOperationId(deleteOpIds);
                 operationRepository.saveAll(addOps);
             }

@@ -3,6 +3,8 @@ package com.axon.task;
 import com.axon.task.domain.*;
 import com.axon.task.domain.Message;
 import com.axon.task.repository.MessageRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import java.util.List;
 
 @Service
 public class ParsFixLog {
+
+    private static final Logger logger = LoggerFactory.getLogger(ParsFixLog.class);
 
     @Value("${system.file-path}")
     private String filePath;
@@ -67,7 +71,7 @@ public class ParsFixLog {
                 System.out.println(message);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error riding file");
         }
         System.out.println("Message add to DB");
     }
