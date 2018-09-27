@@ -2,6 +2,7 @@ package com.axon.task.domain;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class Message {
     private Long messageId;
     private LocalDateTime receiveTime;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "message")
-    private List<Operation> operations;
+    private List<Operation> operations = new ArrayList<>();
 
     public Long getId() {
         return id;

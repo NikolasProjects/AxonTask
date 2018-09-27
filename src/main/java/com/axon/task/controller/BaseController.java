@@ -2,9 +2,13 @@ package com.axon.task.controller;
 
 import com.axon.task.OperationExecution;
 import com.axon.task.ParsFixLog;
+import com.axon.task.domain.Message;
+import com.axon.task.repository.MessageRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by Nikolay on 20.09.2018.
@@ -14,10 +18,12 @@ public class BaseController {
 
     private final ParsFixLog parsFixLog;
     private final OperationExecution operationExecution;
+    private final MessageRepository messageRepository;
 
-    public BaseController(ParsFixLog parsFixLog, OperationExecution operationExecution) {
+    public BaseController(ParsFixLog parsFixLog, OperationExecution operationExecution, MessageRepository messageRepository) {
         this.parsFixLog = parsFixLog;
         this.operationExecution = operationExecution;
+        this.messageRepository = messageRepository;
     }
 
 
@@ -30,8 +36,10 @@ public class BaseController {
     public String orders(Model model) {
         parsFixLog.parsAndAddToDB();
 //        operationExecution.executionOperation();
-     /*   orderRepository.saveAll(orders);
-        model.addAttribute("orders", orders);*/
+        List<Message> messages = messageRepository.findAll();
+        model.addAttribute(messages);
+      //  orderRepository.saveAll(orders);
+        model.addAttribute("messages", messages);
         return "orders";
     }
 

@@ -64,9 +64,7 @@ public class ParsFixLog {
                 for (Group group : groups) {
                     Operation operation = mapOperation(group);
                     operations.add(operation);
-                    System.out.println(operation);
                     message.addOperation(operation);
-                   // System.out.println(message);
                 }
                 messageRepository.save(message);
             }

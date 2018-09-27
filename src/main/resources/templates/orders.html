@@ -9,19 +9,17 @@
 <br/><br/>
 <div>
     <table border="1">
-        <tr>
+       <!-- <tr>
             <th>ID</th>
             <th>Number</th>
             <th>Type</th>
             <th>Price</th>
             <th>Size</th>
-        </tr>
-        <tr th:each="order : ${orders}">
-        <td th:utext="${order.orderId}"></td>
-        <td th:utext="${order.msgId}"></td>
-        <td th:utext="${order.type}"></td>
-        <td th:utext="${order.price}"></td>
-        <td th:utext="${order.size}">...</td>
+        </tr>-->
+        <tr th:each="message : ${messages}">
+        <td th:utext="${message.id}"></td>
+        <td th:utext="${message.receiveTime}"></td>
+
 
         </tr>
     </table>

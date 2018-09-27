@@ -31,16 +31,17 @@ public class OperationExecution {
 
         List<Message> messages = messageRepository.findAll();
         for (Message message : messages) {
-            List<Long> deleteOpIds = new ArrayList<>();
-            List<Operation> addOps = new ArrayList<>();
+            List<Long> deleteOperationsById = new ArrayList<>();
+            List<Operation> addOperations = new ArrayList<>();
             for (Operation operation : message.getOperations()) {
                 if (operation.getOperationType279().equals(OperationType.DELETE)) {
-                    deleteOpIds.add(operation.getOperationId278());
+                    deleteOperationsById.add(operation.getOperationId278());
                 } else {
-                    addOps.add(operation);
+                    addOperations.add(operation);
                 }
-                bookRepository.deleteAllByOperationId(deleteOpIds);
-                operationRepository.saveAll(addOps);
+                bookRepository.deleteAllByOperationId(deleteOperationsById);
+                operationRepository.saveAll(addOperations);
+
             }
         }
 
