@@ -5,8 +5,10 @@ import com.axon.task.ParsFixLog;
 import com.axon.task.domain.Book;
 import com.axon.task.domain.Message;
 import com.axon.task.domain.Operation;
+import com.axon.task.domain.OrderType;
 import com.axon.task.repository.BookRepository;
 import com.axon.task.repository.MessageRepository;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -38,26 +40,31 @@ public class BaseController {
         return "home";
     }
 
-    @RequestMapping(value = "/ordersList", method = RequestMethod.GET)
-    public String orders(Model model) {
+    @RequestMapping(value = "/write")
+    public String orders() {
         parsFixLog.parsAndAddToDB();
+        return "orders";
+    }
+
+    @RequestMapping(value = "/write/save")
+    public String saveToFile(Model model) {
         operationExecution.executionOperation();
-
-        List<Message> messages = messageRepository.findAll();
-        model.addAttribute(messages);
-
-        List<Operation> operations = new ArrayList<>();
-
-        for (Message msg : messages) {
-            for (Operation operation : msg.getOperations()) {
-                operations.add(operation);
+        List<Book> books = bookRepository.findAll();
+        List<Book> bids = new ArrayList<>();
+        List<Book> asks = new ArrayList<>();
+        for (Book book : books) {
+            if (book.getType().equals(OrderType.BID)) {
+                bids.add(book);
+            } else {
+                asks.add(book);
             }
         }
-        List<Book> books = bookRepository.findAll();
-        model.addAttribute("operations", operations);
-        model.addAttribute("messages", messages);
-        model.addAttribute("books", books);
-        return "orders";
+        model.addAttribute("bids", bids);
+        model.addAttribute("asks", asks);
+
+
+
+        return "end";
     }
 }
 

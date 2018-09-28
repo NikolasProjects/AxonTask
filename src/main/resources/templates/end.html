@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Congratulations</title>
+</head>
+<body>
+<h1>You can see file to: TODO</h1>
+
+<div class="container">
+
+    <table border="1" style="position:absolute">
+        <tr th:each="bid : ${bids}">
+            <td th:utext="${bid.size}"></td>
+            <td th:utext="${bid.price}"></td>
+        </tr>
+    </table>
+    <table border="1" style="position:absolute; left:150px">
+        <tr th:each="ask : ${asks}">
+            <td th:utext="${ask.size}"></td>
+            <td th:utext="${ask.price}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
