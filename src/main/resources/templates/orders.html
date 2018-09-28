@@ -6,23 +6,30 @@
 </head>
 <body>
 <h1>Orders</h1>
-<br/><br/>
-<div>
-    <table border="1">
-       <!-- <tr>
-            <th>ID</th>
-            <th>Number</th>
-            <th>Type</th>
-            <th>Price</th>
-            <th>Size</th>
-        </tr>-->
-        <tr th:each="message : ${messages}">
-        <td th:utext="${message.id}"></td>
-        <td th:utext="${message.receiveTime}"></td>
+<div class="container">
+<!--        <table border=1 style="position:absolute">
+            <tr th:each="operation : ${operations}">
+                <td th:utext="${operation.operationId278}"></td>
+                <td th:utext="${operation.price270}"></td>
 
-
-        </tr>
-    </table>
+            </tr>
+        </table>-->
+        <table border=1 style="position:absolute; left:200px">
+            <tr th:each="book : ${books}">
+                <td th:utext="${book.operationId}"></td>
+                <td th:utext="${book.size}"></td>
+                <td th:utext="${book.price}"></td>
+                <td th:utext="${book.type}"></td>
+            </tr>
+        </table>
+<!--        <table border=1 style="position:absolute; left:600px">
+            <tr th:each="message : ${messages}">
+                <td th:utext="${message.id}"></td>
+                <td th:utext="${message.receiveTime}"></td>
+            </tr>
+        </table>-->
+    </div>
 </div>
+
 </body>
 </html>

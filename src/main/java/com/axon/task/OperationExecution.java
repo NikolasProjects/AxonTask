@@ -5,6 +5,7 @@ import com.axon.task.repository.BookRepository;
 import com.axon.task.repository.MessageRepository;
 import com.axon.task.repository.OperationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +28,9 @@ public class OperationExecution {
         this.parsFixLog = parsFixLog;
     }
 
+    @Transactional
     public void executionOperation() {
-
+        List<Book> books = bookRepository.findAll();
         List<Message> messages = messageRepository.findAll();
         for (Message message : messages) {
             List<Long> deleteOperationsById = new ArrayList<>();
@@ -40,11 +42,16 @@ public class OperationExecution {
                     addOperations.add(operation);
                 }
                 bookRepository.deleteAllByOperationId(deleteOperationsById);
-                operationRepository.saveAll(addOperations);
 
+                Book book = new Book();
+                for (Operation oper : addOperations) {
+                    book.setOperationId(oper.getOperationId278());
+                    book.setPrice(oper.getPrice270());
+                    book.setSize(oper.getPriceSize271());
+                    book.setType(oper.getOrderType269());
+                }
+                bookRepository.save(book);
             }
         }
-
     }
-
 }
